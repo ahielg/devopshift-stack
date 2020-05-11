@@ -98,6 +98,20 @@ function install_es {
     echo -e "\nWaiting for ELASTICSEARCH packages to be deployed (up to 4 minutes)\n"
     kubectl wait --for=condition=Ready pods -l "common.k8s.elastic.co/type=elasticsearch"  --timeout 4m 2>&1 || { echo >&2 "Failed to install elasticsearch - Aborting.\n"; exit 1; }
     kubectl wait --for=condition=Ready pods -l "common.k8s.elastic.co/type=kibana"  --timeout 4m 2>&1 || { echo >&2 "Failed to install KIBANA - Aborting."; exit 1; }
+    echo -e "\nECK deployed and working \n"
+    
+    GUESTPASS=$(kubectl get secret quickstart-es-elastic-user -n default -o=jsonpath='{.data.elastic}' | base64 --decode)
+    echo -e "Please save the following ECK credentials to be used with KIBANA 
+    Username: elastic
+    Password: $GUESTPASS
+    "
+    echo -e "To Access Kibana and ES please browse:
+    KIBANA: http://localhost:8081/kibana/
+    ELASTIC: http://localhost:8081/elastic/
+    Password: $GUESTPASS
+    " 
+  
+
 }
 
 

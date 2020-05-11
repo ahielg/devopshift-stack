@@ -7,4 +7,12 @@ metadata:
 spec:
   prefix: {{  .Values.ingress_ambassador.prefix }}
   service: {{ .Values.ingress_ambassador.service }}
+---
+apiVersion: getambassador.io/v2
+kind:  Mapping
+metadata:
+  name:  eck-elastic
+spec:
+  prefix: /elastic/
+  service: quickstart-es-http:9200
 {{- end }}
