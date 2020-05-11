@@ -7,4 +7,18 @@ spec:
   count: 1
   elasticsearchRef:
     name: quickstart
+  podTemplate:
+    spec:
+      containers:
+        - name: kibana
+          env:
+            - name: SERVER_BASEPATH
+              value: "/kibana"
+#          - name: elasticsearch.hosts
+#            value: "quickstart-es-http"
 
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: true
+    

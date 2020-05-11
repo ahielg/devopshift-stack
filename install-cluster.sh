@@ -93,28 +93,11 @@ function install_rmq {
 
 
 function install_es {
-    echo -e "\nInstalling ELASTICSEARCH 00/03\n"
-    kubectl apply -f ../packages/elasticsearch/00-all-in-one.yml 2>&1 || { echo >&2 "Failed to install ELASTIC - Aborting. Please read ELASTIC readme file in it's folder"; exit 1; }
-    echo -e "\nInstalling ELASTICSEARCH 02-03\n"
-    echo -e "\nInstalling ES CLUSTER\n"
-    kubectl apply -f ../packages/elasticsearch/01-elasticsearch-cluster.yml 2>&1 || { echo >&2 "Failed to install ELASTIC - Aborting. Please read ELASTIC readme file in it's folder"; exit 1; }
-    echo -e "\nInstalling KIBANA CLUSTER\n"
-    kubectl apply -f ../packages/elasticsearch/02-kibana.yml 2>&1 || { echo >&2 "Failed to install ELASTIC - Aborting. Please read ELASTIC readme file in it's folder"; exit 1; }
-    echo -e "\nInstalling ingress RULES (GATEWAY AND VIRTUAL SERVICES\n"
-    kubectl apply -f ../packages/elasticsearch/03-ingress-virtualservice.yml 2>&1 || { echo >&2 "Failed to install ELASTIC - Aborting. Please read ELASTIC readme file in it's folder"; exit 1; }
-    echo -e "\nWaiting for elastic cluster to be deployed\n"
-    kubectl wait --for=condition=Ready pods -l "elasticsearch.k8s.elastic.co/cluster-name=quickstart" --timeout 5m 2>&1 || { echo >&2 "Failed to install ELASTIC - Aborting. Please read ELASTIC readme file in it's folder"; exit 1; }
-    echo -e "\nWaiting for kibana cluster to be deployed\n"
-    kubectl wait --for=condition=Ready pods -l "kibana.k8s.elastic.co/name=quickstart" --timeout 5m  2>&1 || 2>&1 || { echo >&2 "Failed to install ELASTIC - Aborting. Please read ELASTIC readme file in it's folder"; exit 1; }
-    echo -e "\nElastic credentials\n" 
-    PASSWORD=$(kubectl get secret quickstart-es-elastic-user -o=jsonpath='{.data.elastic}' | base64 --decode)
-    echo -e "\nuser:elastic\nPassword:$PASSWORD\n\n" 
-    echo -e "\nConfigure your HOSTS file as followed:\n"
-    sleep 3
-    open https://github.com/yanivomc/attenti/blob/master/packages/elasticsearch/readme.MD#configure-hosts-file
-    echo -e "\nElasticSearch and Kibana operators installed\n"
-    echo -e "\nSee more info here:\n"
-    echo -e https://github.com/yanivomc/attenti/blob/master/packages/elasticsearch/readme.MD
+    echo -e "\nInstalling ELASTICSEARCH \n"
+    helm install eck ./helm/eck/ 2>&1 || { echo >&2 "Failed to install ELASTIC - Aborting"; exit 1; }
+    echo -e "\nWaiting for ELASTICSEARCH packages to be deployed (up to 4 minutes)\n"
+    kubectl wait --for=condition=Ready pods -l "common.k8s.elastic.co/type=elasticsearch"  --timeout 4m 2>&1 || { echo >&2 "Failed to install elasticsearch - Aborting.\n"; exit 1; }
+    kubectl wait --for=condition=Ready pods -l "common.k8s.elastic.co/type=kibana"  --timeout 4m 2>&1 || { echo >&2 "Failed to install KIBANA - Aborting."; exit 1; }
 }
 
 
