@@ -96,7 +96,7 @@ kubectl logs -f kafkaconnect-cp-kafka-connect-cdd68f768-qk4cc
 ### Validate Kafka connect is working by
 Exposing kafka-ui Pod to 8080
 ~~~
-kubectl port-forward pods/kafkaconnect-kafka-ui   --address 0.0.0.0 8080:8000                                                           
+kubectl port-forward pods/kafkaconnect-kafka-ui --address 0.0.0.0 8080:8000                                                           
 ~~~
 
 Expected result:

@@ -116,16 +116,28 @@ function install_es {
 
 
 function install_kafka {
-    echo -e "\nInstalling KAFKA\n"
-   for file in ../packages/kafka/*
-    do
-          echo -e "Applying $file"
-          kubectl apply -f "$file" --wait
-          echo -e "\nwaiting for pods to start (up to 5 minutes for each file)\n"
-          kubectl wait --for=condition=Ready pods --all -n default --timeout 5m | grep -v quickstart 2>&1 || 2>&1 || { echo >&2 "Failed to install kafka - Aborting. Please read kafka readme file in it's folder"; exit 1; }
-    done
-    echo -e "\nKafka Deployed\n"
+    echo -e "\nInstalling KAFKA Operators\n"
+    helm install kafka ./helm/kafka/01-operators/ 2>&1 || { echo >&2 "Failed to install Kafka Operators - Aborting"; exit 1; }
+    echo -e "\nInstalling KAFKA Cluster\n"
+    helm install kafka-cluster ./helm/kafka/02-clusters/ 2>&1 || { echo >&2 "Failed to install Kafka Cluster - Aborting"; exit 1; }
+    echo -e "\nWaiting for KAFKA Cluster to be deployed (up to 4 minutes)\n"
+    kubectl wait --for=condition=Ready pods -l "app.kubernetes.io/managed-by=strimzi-cluster-operator" --timeout 4m
+    echo -e "\nInstalling KAFKA Registry\n"
+    helm install kafka-registry --set kafka.bootstrapServers="PLAINTEXT://kafka-cluster-kafka-bootstrap:9092" ./helm/kafka/03-connectNregistry/kafka-registry  2>&1 || { echo >&2 "Failed to install Kafka registry - Aborting"; exit 1; }
+    echo -e "\nWaiting for KAFKA Registry to be deployed (up to 4 minutes)\n"
+    kubectl wait --for=condition=Ready pods -l "release=kafka-registry" --timeout 4m
+    echo -e "\nInstalling KAFKA Connect\n"
+    helm install kafka-connect --set kafka.bootstrapServers="PLAINTEXT://kafka-cluster-kafka-bootstrap:9092",cp-schema-registry.url="kafkaregistry-cp-schema-registry:8081" ./helm/kafka/03-connectNregistry/kafka-connect 2>&1 || { echo >&2 "Failed to install Kafka connect - Aborting"; exit 1; }
+    echo -e "\nWaiting for KAFKA Connect to be deployed (up to 4 minutes)\n"
+    kubectl wait --for=condition=Ready pods -l "release=kafka-connect" --timeout 4m
+    echo -e "\nKAKFKA deployed and working \n"
 }
+
+
+# function configure_connector {
+#     #TODO: Auto Configure Connector for kafka
+# }
+
 function check_cluster {
     kind get nodes --name $CLUSTER_NAME
     if kubectl get nodes > /dev/null 2>&1 ; then
@@ -181,6 +193,12 @@ case "$1" in
             CLUSTER_NAME=$2
             create_cluster $CLUSTER_NAME
             ;;
+        install-all)
+            echo installing install-prometheus on local cluster 
+            install_es
+            install_kafka
+            install_rmq
+            ;;                     
         install-prometheus)
             echo installing install-prometheus on local cluster 
             install_prometheus
