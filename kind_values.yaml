@@ -9,7 +9,7 @@ nodes:
       listenAddress: "0.0.0.0" # Optional, defaults to "0.0.0.0"
       protocol: tcp # Optional, defaults to tcp
     - containerPort: 8877 # ambassador diagnose port
-      hostPort: 887780
+      hostPort: 8877
       listenAddress: "0.0.0.0" # Optional, defaults to "0.0.0.0"
       protocol: tcp # Optional, defaults to tcp
     - containerPort: 30443
