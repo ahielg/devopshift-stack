@@ -4,8 +4,11 @@ nodes:
 - role: control-plane
 - role: worker
   extraPortMappings:
-    - containerPort: 32448 # ambassador
-      hostPort: 80
+    - containerPort: 80 # ambassador
+      hostPort: 8080
+      listenAddress: "0.0.0.0" # Optional, defaults to "0.0.0.0"
+    - containerPort: 4433 # ambassador
+      hostPort: 443
       listenAddress: "0.0.0.0" # Optional, defaults to "0.0.0.0"
       protocol: tcp # Optional, defaults to tcp
     - containerPort: 8877 # ambassador diagnose port

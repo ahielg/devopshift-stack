@@ -463,9 +463,15 @@ serviceAccount:
   ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#use-the-default-service-account-to-access-the-api-server
   automountServiceAccountToken: true
 
+ingress_ambassador:
+  enabled: true
+  name: rmq-ingress
+  prefix: /rmq/
+  service: rmq-rabbitmq-ha.default:15672
+
 ingress:
   ## Set to true to enable ingress record generation
-  enabled: true
+  enabled: false
 
   path: /
 

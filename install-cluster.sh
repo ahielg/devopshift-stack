@@ -40,10 +40,13 @@ function create_cluster {
                check_cluster $CLUSTER_NAME
 
                # Check if kubectl works
-               echo -e "\nListing K8S NODES\n"
+               echo -e "\nListing K8S NODES Please wait...\n"
+               sleep 40
                kubectl get nodes 2>&1 || { echo >&2 "Unable to run kubectl - Aborting."; exit 1; }
-               #TODO: Skiping ingress installation
-               #install_ingress
+               echo -e "\nInstalling ingress\n"
+               install_ingress
+               echo -e "\ninstall_prometheus\n"
+               install_prometheus
                echo -e "\nCLUSTER READY\n"
            }
 
@@ -73,8 +76,8 @@ function install_ingress {
 
 function install_rmq {
     echo -e "\nInstalling RMQ\n"
-    helm install rmq  .helm/kafka/04-rabbitmq-ha/ 2>&1 || { echo >&2 "Failed to install RMQ"; exit 1; }
-    echo -e "\nWaiting for ingress packages to be deployed (up to 4 minutes)\n"
+    helm install rmq  ./helm/kafka/04-rabbitmq-ha/ 2>&1 || { echo >&2 "Failed to install RMQ"; exit 1; }
+    echo -e "\nWaiting for RMQ packages to be deployed (up to 4 minutes)\n"
     kubectl wait --for=condition=Ready pods -l "app=rabbitmq-ha"  --timeout 4m 2>&1 || { echo >&2 "Failed to install RMQ - Aborting.\n1.Please rerun kubectl wait --for=condition=Ready pods -l "app=rabbitmq-ha"  --timeout 4m \n2."; exit 1; }
     echo -e "\nRMQ deployed and working \n"
     echo -e "\nRMQ USER/PASS credentials \n"
@@ -181,6 +184,10 @@ case "$1" in
             CLUSTER_NAME=$2
             create_cluster $CLUSTER_NAME
             ;;
+        install-prometheus)
+            echo installing install-prometheus on local cluster 
+            install_prometheus
+            ;;                     
         install-elastic)
             echo installing elasticsearch on local cluster 
             install_es
@@ -188,6 +195,10 @@ case "$1" in
         install-kafka)
             echo installing kafka on local cluster 
             install_kafka
+            ;;                     
+        install-rmq)
+            echo installing rmq on local cluster 
+            install_rmq
             ;;                     
         delete-cluster)
             echo deleting cluster named $2
