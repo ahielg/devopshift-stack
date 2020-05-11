@@ -1,0 +1,20 @@
+To produce messages externaly:
+
+curl -X POST \
+  http://localhost:8081/topics/my-topic \
+  -H 'content-type: application/vnd.kafka.json.v2+json' \
+  -d '{
+    "records": [
+        {
+            "key": "key-1",
+            "value": "value-1"
+        },
+        {
+            "key": "key-2",
+            "value": "value-2"
+        }
+    ]
+}'
+
+For more information:
+https://strimzi.io/blog/2019/11/05/exposing-http-bridge/
