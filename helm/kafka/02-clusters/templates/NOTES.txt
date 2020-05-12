@@ -13,7 +13,7 @@ curl -X POST \
             "key": "key-2",
             "value": "value-2"
         }
-    ]
+    ]  
 }'
 
 For more information:
