@@ -21,9 +21,9 @@ nodes:
       protocol: tcp # Optional, defaults to tcp
     - containerPort: 32100 # kafka Bootstrap
       hostPort: 9092
-    - containerPort: 32000 # kafka broker1
-      hostPort: 9093
-    - containerPort: 32200 # kafka broker2
+    - containerPort: 32000 # kafka bootstrap
+      hostPort: 9091
+    - containerPort: 32200 # kafka broker0
       hostPort: 9094            
       listenAddress: "0.0.0.0" # Optional, defaults to "0.0.0.0"
       protocol: tcp # Optional, defaults to tcp
