@@ -4,5 +4,5 @@ kind:  Mapping
 metadata:
   name:  kafka-connect-ui
 spec:
-  prefix: /
+  prefix: /connect/
   service: kafka-ui:8000

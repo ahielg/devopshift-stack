@@ -100,9 +100,12 @@ service:
   - name: http
     port: 80
     targetPort: 8080
+    nodePort: 30002
+    
   - name: https
     port: 443
     targetPort: 8443
+    nodePort: 30001
   type: NodePort
 serviceAccount:
   create: true

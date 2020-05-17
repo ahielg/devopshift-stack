@@ -13,6 +13,8 @@ spec:
     env:
     - name: CONNECT_URL
       value: "http://kafka-connect-cp-kafka-connect:8083"
+    - name: PROXY
+      value: "false"
 ---
 apiVersion: v1
 kind: Service

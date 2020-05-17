@@ -10,6 +10,13 @@ spec:
       tls: {}
       external:
         type: nodeport
+        overrides:
+          bootstrap:
+            nodePort: 32100
+          brokers:
+          - broker: 0
+            nodePort: 32200
+
         tls: false
     storage:
       type: jbod

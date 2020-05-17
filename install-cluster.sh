@@ -187,17 +187,22 @@ case "$1" in
         install-kind)
             echo installing kind
             ;;
-         
         create-cluster)
             echo creating new cluster and ingress on cluster named $2
             CLUSTER_NAME=$2
             create_cluster $CLUSTER_NAME
             ;;
         install-all)
-            echo installing install-prometheus on local cluster 
+            echo installing all packages on local cluster 
+            install_ingress
+            install-prometheus
             install_es
             install_kafka
             install_rmq
+            ;;
+        install-ingress)
+            echo installing ambassador
+            install_ingress
             ;;                     
         install-prometheus)
             echo installing install-prometheus on local cluster 
@@ -232,7 +237,7 @@ case "$1" in
             ;;
          
         *)
-            echo $"Usage: $0 {install-kind|create-cluster [NAME]|install-elastic|install-kafka}"
+            echo $"Usage: $0 {install-kind|create-cluster [NAME]|install-ingress|install-prometheus|install-elastic|install-kafka|install-rmq|install-all}"
             exit 1
  
 esac
