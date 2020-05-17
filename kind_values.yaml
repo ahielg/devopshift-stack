@@ -37,4 +37,9 @@ nodes:
       listenAddress: "0.0.0.0" # Optional, defaults to "0.0.0.0"
       protocol: tcp # Optional, defaults to tcp
 
+    - containerPort: 30800 # KAFKA UI
+      hostPort: 8000
+      listenAddress: "0.0.0.0" # Optional, defaults to "0.0.0.0"
+      protocol: tcp # Optional, defaults to tcp      
+
       
