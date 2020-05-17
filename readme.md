@@ -12,7 +12,8 @@ This kind installation expose the following ports:
 <b>kafka broker1</b> localhost:9093
 <b>kafka broker2</b> localhost:9094
 <b>RMQ</b> localhost:5672
-<b>RMQ Managment Port</b> http://localhost:15672
+<b>RMQ Managment site</b> http://localhost:8080/rmq/
+<b>Kafka Connec UI</b> http://localhost:8000
 
 ### Step I run K8S kind
 The following command will:
@@ -133,7 +134,6 @@ default     statefulset.apps/prometheus-prometheus-prometheus-oper-prometheus   
 
 __________
 
-<b>The following steps can ran pre requirments of the developer </b>
 
 ### Step II install KAFKA
 Run the following command to install:
@@ -215,3 +215,7 @@ https://github.com/confluentinc/schema-registry
 Waiting for KAFKA Registry to be deployed (up to 4 minutes)
 
 ~~~
+
+Once Kafka is deployed please run:
+
+1. ./install-cluster.sh install-rmq
