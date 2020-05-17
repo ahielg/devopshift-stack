@@ -89,8 +89,49 @@ function install_rmq {
     Management username : management
     Management password : $MNGPASS
     "
+    create_qexchange
 }
 
+function create_qexchange {
+    echo -e "Creating new QUEUE And Exchance binding"
+    ./rabbitmqadmin -u guest -p guest --host localhost --port 8080 --path-prefix /rmq  -V / declare exchange name=test.exchange type=direct 2>&1 || { echo >&2 "failed to create RMQ exchange."; exit 1; }
+    ./rabbitmqadmin -u guest -p guest --host localhost --port 8080 --path-prefix /rmq  -V / declare queue name=test.queue 2>&1 || { echo >&2 "failed to create RMQ queue."; exit 1; }
+    ./rabbitmqadmin -u guest -p guest --host localhost --port 8080 --path-prefix /rmq  -V / declare binding source=test.exchange destination=test.queue 2>&1 || { echo >&2 "failed to create RMQ binding."; exit 1; }
+
+    echo -e "Creating kafka connector"
+    create_connector
+
+
+}
+
+
+function create_connector {
+curl -X PUT \
+  localhost:8000/api/kafka-connect-1/connectors/RabbitMQSinkConnector/config \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json' \
+  -d '{
+  "name": "RabbitMQSinkConnector",
+  "connector.class": "com.datamountaineer.streamreactor.connect.rabbitmq.sink.RabbitMQSinkConnector",
+  "connect.rabbitmq.password": "guest",
+  "errors.log.include.messages": " true",
+  "connect.rabbitmq.port": "5672",
+  "connect.rabbitmq.username": "guest",
+  "topics": "topic",
+  "tasks.max": "1",
+  "errors.deadletterqueue.context.headers.enable": "true",
+  "value.errors.log.enable": "true",
+  "connect.rabbitmq.kcql": "INSERT INTO test.exchange SELECT * FROM topic WITHTYPE topic",
+  "connect.rabbitmq.use.tls": "false",
+  "errors.deadletterqueue.topic.name": "deadletter",
+  "connect.rabbitmq.host": "rmq-rabbitmq-ha",
+  "value.converter.schemas.enable": "false",
+  "errors.tolerance": "all",
+  "errors.deadletterqueue.topic.replication.factor": "1",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "key.converter": "org.apache.kafka.connect.json.JsonConverter"
+}' 2>&1 || { echo >&2 "failed to create KAFKA CONNECTOR."; exit 1; }
+}
 
 function install_es {
     echo -e "\nInstalling ELASTICSEARCH \n"
