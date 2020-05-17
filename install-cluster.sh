@@ -75,6 +75,8 @@ function install_ingress {
 }
 
 function install_rmq {
+    echo -e "Making sure kafka is installed"
+    helm status kafka-cluster 2>&1 || { echo >&2 "Kafka Cluster not installed - Installing."; install_kafka; }
     echo -e "\nInstalling RMQ\n"
     helm install rmq  ./helm/kafka/04-rabbitmq-ha/ 2>&1 || { echo >&2 "Failed to install RMQ"; exit 1; }
     echo -e "\nWaiting for RMQ packages to be deployed (up to 4 minutes)\n"
@@ -100,8 +102,6 @@ function create_qexchange {
 
     echo -e "Creating kafka connector"
     create_connector
-
-
 }
 
 
