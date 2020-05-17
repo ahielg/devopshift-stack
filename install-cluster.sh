@@ -2,7 +2,7 @@
 # This will install k8s kind and ARGO CD
 
 # Validate all cli tools are installed - PLEASE ADD CLI REQUIRED
-declare -a CLI=("kubectl" "kind" "helm", "python" )
+declare -a CLI=("kubectl" "kind" "helm" "python" )
 #export REGISTRY_IP=192.168.86.73 # Change to the IP where NEXUS is installed
 #export REGISTRY_HOSTNAME=registry.emei # change to the name of the host name
 export CLUSTER_NAME=localdev # change to the name of your cluster
