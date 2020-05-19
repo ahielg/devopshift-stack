@@ -135,8 +135,12 @@ curl -X PUT \
 
 function install_es {
     echo -e "\nInstalling ELASTICSEARCH \n"
+    echo -e "\nInstalling CRD's \n"
+    kubectl create -f ./helm/eck/customresources/all-in-one.yaml 
+    echo -e "\nInstalling ELASTICSEARCH Operator\n"
     helm install eck ./helm/eck/ 2>&1 || { echo >&2 "Failed to install ELASTIC - Aborting"; exit 1; }
     echo -e "\nWaiting for ELASTICSEARCH packages to be deployed (up to 4 minutes)\n"
+    sleep 10
     kubectl wait --for=condition=Ready pods -l "common.k8s.elastic.co/type=elasticsearch"  --timeout 4m 2>&1 || { echo >&2 "Failed to install elasticsearch - Aborting.\n"; exit 1; }
     kubectl wait --for=condition=Ready pods -l "common.k8s.elastic.co/type=kibana"  --timeout 4m 2>&1 || { echo >&2 "Failed to install KIBANA - Aborting."; exit 1; }
     echo -e "\nECK deployed and working \n"
