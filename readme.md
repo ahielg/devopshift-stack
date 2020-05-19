@@ -11,9 +11,10 @@ This kind installation expose the following ports:
 <b>kafka bootstrap</b> localhost:9092
 <b>kafka broker1</b> localhost:9093
 <b>kafka broker2</b> localhost:9094
-<b>RMQ</b> localhost:5672
+<b>RMQ MQTT</b> localhost:1883
+<b>RMQ AMQP</b> localhost:5672
 <b>RMQ Managment site</b> http://localhost:8080/rmq/
-<b>Kafka Connec UI</b> http://localhost:8000
+<b>Kafka Connect UI</b> http://localhost:8000
 
 ### Step I run K8S kind
 The following command will:
