@@ -8,9 +8,9 @@ This kind installation expose the following ports:
 
 <b>Ingress</b> http://localhost:8080
 <b>zookeeper</b> http://localhost:2181
-<b>kafka bootstrap</b> localhost:9092
-<b>kafka broker1</b> localhost:9093
-<b>kafka broker2</b> localhost:9094
+<b>kafka broker0</b> localhost:9094
+<b>kafka bootstrap</b> localhost:9092 # DONT USE THIS 
+<b>kafka broker1</b> localhost:9093 # DONT USE THIS 
 <b>RMQ MQTT</b> localhost:1883
 <b>RMQ AMQP</b> localhost:5672
 <b>RMQ Managment site</b> http://localhost:8080/rmq/
