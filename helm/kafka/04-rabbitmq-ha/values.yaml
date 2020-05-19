@@ -339,7 +339,7 @@ service:
   ### Ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
   ###
   epmdNodePort: null
-  amqpNodePort: 30001
+  amqpNodePort: 30005
   managerNodePort: null
 
 podManagementPolicy: OrderedReady
