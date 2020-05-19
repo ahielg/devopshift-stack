@@ -163,16 +163,15 @@ function install_es {
 function install_kafka {
     echo -e "\nInstalling KAFKA Operators\n"
     helm install kafka ./helm/kafka/01-operators/ 2>&1 || { echo >&2 "Failed to install Kafka Operators - Aborting"; exit 1; }
+    echo -e "\nWaiting for KAFKA operator to be deployed (up to 4 minutes)\n"
+    kubectl wait --for=condition=Ready pods -l "name=strimzi-cluster-operator" --timeout 4m
     echo -e "\nInstalling KAFKA Cluster\n"
     helm install kafka-cluster ./helm/kafka/02-clusters/ 2>&1 || { echo >&2 "Failed to install Kafka Cluster - Aborting"; exit 1; }
-    echo -e "\nWaiting for KAFKA Cluster to be deployed (up to 4 minutes)\n"
-    sleep 15
-    echo -e "\nWaiting for KAFKA cluster-operator to be deployed (up to 4 minutes)\n"
-    kubectl wait --for=condition=Ready pods -l "app.kubernetes.io/managed-by=strimzi-cluster-operator" --timeout 4m
     echo -e "\nWaiting for KAFKA zookeeper to be deployed (up to 4 minutes)\n"
+    sleep 15
     kubectl wait --for=condition=Ready pods -l "strimzi.io/name=kafka-cluster-zookeeper" --timeout 4m
     echo -e "\nWaiting for KAFKA cluster to be deployed (up to 4 minutes)\n"
-    kubectl wait --for=condition=Ready pods -l "strimzi.io/kind=Kafka" --timeout 4m
+    kubectl wait --for=condition=Ready pods -l "strimzi.io/name=kafka-cluster-kafka" --timeout 4m
 
     echo -e "\nInstalling KAFKA Registry\n"
     helm install kafka-registry --set kafka.bootstrapServers="PLAINTEXT://kafka-cluster-kafka-bootstrap:9092" ./helm/kafka/03-connectNregistry/kafka-registry  2>&1 || { echo >&2 "Failed to install Kafka registry - Aborting"; exit 1; }
