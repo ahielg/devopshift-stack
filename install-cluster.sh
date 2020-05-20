@@ -96,6 +96,7 @@ function install_rmq {
 
 function create_qexchange {
     echo -e "Creating new QUEUE And Exchance binding"
+    echo -e "If creation fails - make sure rmq pods are up and then run - ./install-cluster.sh create_qexchange ./"
     ./rabbitmqadmin -u guest -p guest --host localhost --port 8080 --path-prefix /rmq  -V / declare exchange name=test.exchange type=direct 2>&1 || { echo >&2 "failed to create RMQ exchange."; exit 1; }
     ./rabbitmqadmin -u guest -p guest --host localhost --port 8080 --path-prefix /rmq  -V / declare queue name=test.queue 2>&1 || { echo >&2 "failed to create RMQ queue."; exit 1; }
     ./rabbitmqadmin -u guest -p guest --host localhost --port 8080 --path-prefix /rmq  -V / declare binding source=test.exchange destination=test.queue 2>&1 || { echo >&2 "failed to create RMQ binding."; exit 1; }
@@ -270,7 +271,13 @@ case "$1" in
         install-rmq)
             echo installing rmq on local cluster 
             install_rmq
-            ;;                     
+            ;;        
+        create_qexchange)
+            echo installing exchnage on local cluster 
+            create_qexchange
+            ;;        
+
+                         
         delete-cluster)
             echo deleting cluster named $2
             CLUSTER_NAME=$2
@@ -288,7 +295,7 @@ case "$1" in
             ;;
          
         *)
-            echo $"Usage: $0 {install-kind|create-cluster [NAME]|install-ingress|install-prometheus|install-elastic|install-kafka|install-rmq|install-all}"
+            echo $"Usage: $0 {install-kind|create-cluster [NAME]|install-ingress|install-prometheus|install-elastic|install-kafka|install-rmq|install-all|create_qexchange}"
             exit 1
  
 esac

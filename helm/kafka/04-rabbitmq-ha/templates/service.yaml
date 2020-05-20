@@ -84,7 +84,7 @@ spec:
       protocol: TCP
       port: 1883
       targetPort: mqtt-tcp
-      nodePort: 30002
+      nodePort: 30033
     - name: mqtt-ssl
       protocol: TCP
       port: 8883
