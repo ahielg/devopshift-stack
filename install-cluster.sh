@@ -191,11 +191,12 @@ function install_kafka {
     kubectl wait --for=condition=Ready pods -l "release=kafka-connect" --timeout 4m
 
     echo -e "\nExposing KAKFA BROKERS for server $1 as \n"
-    expose_port 32220 2>&1 || { echo >&2 "Failed to expose broker - check ports avilable on localhost"; exit 1; }
-    expose_port 2181 2>&1 || { echo >&2 "Failed to expose zookeeper - check ports avilable on localhost - Aborting."; exit 1; }
+    expose_port 32200 2>&1 || { echo >&2 "Failed to expose broker - check ports avilable on localhost"; exit 1; }
+    echo "starting two"
+    expose_port 30825 2>&1 || { echo >&2 "Failed to expose zookeeper - check ports avilable on localhost - Aborting."; exit 1; }
     echo -e "\nExposing KAKFA BROKERS as \n 
-    localhost:32220 - Kafka broker
-    localhost:2181 - kafka zookeeper"
+    localhost:32200 - Kafka broker
+    localhost:30825 - kafka zookeeper"
 
     echo -e "\nKAKFKA deployed and working \n"
 }
@@ -220,20 +221,25 @@ function check_cluster {
 }
 function expose_port {
     #Check if container forward already exposed
-if docker container inspect kind-proxy-$1 > /dev/null 2>&1 ; then
-    echo port already exposed - Opening browser
-else
+# if docker container inspect proxy-$CLUSTER_NAME-${port} > /dev/null 2>&1 ; then
+#     echo proxy-$CLUSTER_NAME-${port}
+#     echo -e "\nExpose already exists - Skipping step\n"
+    
+# else
     for port in $1
-do                
+do            
+    echo -e "\n killing old expose containers connections and rebuilding"
+    docker kill proxy-$CLUSTER_NAME-${port} > /dev/null 2>&1 
+
     node_port=$1
 
-    docker run --rm -d --name porxy-$CLUSTER_NAME-${port} \
+    docker run --rm -d --name proxy-$CLUSTER_NAME-${port} \
       --publish 127.0.0.1:${port}:${port} \
       --link $CLUSTER_NAME-worker:target \
       alpine/socat -dd \
       tcp-listen:${port},fork,reuseaddr tcp-connect:target:${node_port}
 done
-fi
+#   
 }
 
 
