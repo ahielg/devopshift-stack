@@ -11,6 +11,12 @@ function init_process {
     validate_command $CLI 
     case_script $@
 }
+function init_process_expose {
+    if [ -z $CLUSTER_NAME ]; then
+        echo -e "\nPlease add Cluster name as an argument\n"
+        exit 0
+    fi
+}
 
 function validate_command {
     echo "checking CLI requirments"
@@ -162,6 +168,7 @@ function install_es {
 
 
 function install_kafka {
+    init_process_expose
     echo -e "\nInstalling KAFKA Operators\n"
     helm install kafka ./helm/kafka/01-operators/ 2>&1 || { echo >&2 "Failed to install Kafka Operators - Aborting"; exit 1; }
     echo -e "\nWaiting for KAFKA operator to be deployed (up to 4 minutes)\n"
@@ -182,6 +189,14 @@ function install_kafka {
     helm install kafka-connect --set kafka.bootstrapServers="PLAINTEXT://kafka-cluster-kafka-bootstrap:9092",cp-schema-registry.url="kafkaregistry-cp-schema-registry:8081" ./helm/kafka/03-connectNregistry/kafka-connect 2>&1 || { echo >&2 "Failed to install Kafka connect - Aborting"; exit 1; }
     echo -e "\nWaiting for KAFKA Connect to be deployed (up to 4 minutes)\n"
     kubectl wait --for=condition=Ready pods -l "release=kafka-connect" --timeout 4m
+
+    echo -e "\nExposing KAKFA BROKERS for server $1 as \n"
+    expose_port 32220 2>&1 || { echo >&2 "Failed to expose broker - check ports avilable on localhost"; exit 1; }
+    expose_port 2181 2>&1 || { echo >&2 "Failed to expose zookeeper - check ports avilable on localhost - Aborting."; exit 1; }
+    echo -e "\nExposing KAKFA BROKERS as \n 
+    localhost:32220 - Kafka broker
+    localhost:2181 - kafka zookeeper"
+
     echo -e "\nKAKFKA deployed and working \n"
 }
 
@@ -266,7 +281,10 @@ case "$1" in
             ;;         
         install-kafka)
             echo installing kafka on local cluster 
-            install_kafka
+            echo please make sure you write - install-kafka [k8s kind cluster name]
+            CLUSTER_NAME=$2
+            echo "Installing on cluster $CLUSTER_NAME" 
+            install_kafka 
             ;;                     
         install-rmq)
             echo installing rmq on local cluster 

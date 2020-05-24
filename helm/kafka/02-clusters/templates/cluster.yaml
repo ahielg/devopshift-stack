@@ -15,6 +15,7 @@ spec:
             nodePort: 32100
           brokers:
           - broker: 0
+            advertisedHost: localhost
             nodePort: 32200
 
         tls: false
@@ -31,6 +32,17 @@ spec:
       transaction.state.log.min.isr: 1
   zookeeper:
     replicas: 1
+    listeners:
+      plain: {}
+      tls: {}
+      external:
+        type: nodeport
+        overrides:
+          bootstrap:
+            nodePort: 32100
+          brokers:
+          - broker: 0
+            nodePort: 32200
     storage:
       type: persistent-claim
       size: 100Gi
