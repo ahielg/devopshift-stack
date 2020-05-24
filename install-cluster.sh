@@ -236,7 +236,7 @@ do
     docker run --rm -d --name proxy-$CLUSTER_NAME-${port} \
       --publish 127.0.0.1:${port}:${port} \
       --link $CLUSTER_NAME-worker:target \
-      --network kind
+      --network kind \
       alpine/socat -dd \
       tcp-listen:${port},fork,reuseaddr tcp-connect:target:${node_port}
 done
