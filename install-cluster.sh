@@ -158,8 +158,8 @@ function install_es {
     Password: $GUESTPASS
     "
     echo -e "To Access Kibana and ES please browse:
-    KIBANA: http://localhost:8081/kibana/
-    ELASTIC: http://localhost:8081/elastic/
+    KIBANA: http://localhost:8080/kibana/
+    ELASTIC: http://localhost:8080/elastic/
     Password: $GUESTPASS
     " 
   
