@@ -7,7 +7,25 @@ declare -a CLI=("kubectl" "kind" "helm" "python" )
 #export REGISTRY_HOSTNAME=registry.emei # change to the name of the host name
 export CLUSTER_NAME=localdev # change to the name of your cluster
 
+function welcome {
+
+#  /$$$$$$$  /$$$$$$$$ /$$    /$$  /$$$$$$  /$$$$$$$   /$$$$$$  /$$   /$$ /$$$$$$ /$$$$$$$$ /$$$$$$$$        /$$$$$$  /$$$$$$$$ /$$$$$$   /$$$$$$  /$$   /$$
+# | $$__  $$| $$_____/| $$   | $$ /$$__  $$| $$__  $$ /$$__  $$| $$  | $$|_  $$_/| $$_____/|__  $$__/       /$$__  $$|__  $$__//$$__  $$ /$$__  $$| $$  /$$/
+# | $$  \ $$| $$      | $$   | $$| $$  \ $$| $$  \ $$| $$  \__/| $$  | $$  | $$  | $$         | $$         | $$  \__/   | $$  | $$  \ $$| $$  \__/| $$ /$$/ 
+# | $$  | $$| $$$$$   |  $$ / $$/| $$  | $$| $$$$$$$/|  $$$$$$ | $$$$$$$$  | $$  | $$$$$      | $$         |  $$$$$$    | $$  | $$$$$$$$| $$      | $$$$$/  
+# | $$  | $$| $$__/    \  $$ $$/ | $$  | $$| $$____/  \____  $$| $$__  $$  | $$  | $$__/      | $$          \____  $$   | $$  | $$__  $$| $$      | $$  $$  
+# | $$  | $$| $$        \  $$$/  | $$  | $$| $$       /$$  \ $$| $$  | $$  | $$  | $$         | $$          /$$  \ $$   | $$  | $$  | $$| $$    $$| $$\  $$ 
+# | $$$$$$$/| $$$$$$$$   \  $/   |  $$$$$$/| $$      |  $$$$$$/| $$  | $$ /$$$$$$| $$         | $$         |  $$$$$$/   | $$  | $$  | $$|  $$$$$$/| $$ \  $$
+# |_______/ |________/    \_/     \______/ |__/       \______/ |__/  |__/|______/|__/         |__/          \______/    |__/  |__/  |__/ \______/ |__/  \__/
+                                                                                                                                                          
+echo -e "\n\n"
+base64 -d <<<"IC8kJCQkJCQkICAvJCQkJCQkJCQgLyQkICAgIC8kJCAgLyQkJCQkJCAgLyQkJCQkJCQgICAvJCQkJCQkICAvJCQgICAvJCQgLyQkJCQkJCAvJCQkJCQkJCQgLyQkJCQkJCQkICAgICAgICAvJCQkJCQkICAvJCQkJCQkJCQgLyQkJCQkJCAgIC8kJCQkJCQgIC8kJCAgIC8kJAp8ICQkX18gICQkfCAkJF9fX19fL3wgJCQgICB8ICQkIC8kJF9fICAkJHwgJCRfXyAgJCQgLyQkX18gICQkfCAkJCAgfCAkJHxfICAkJF8vfCAkJF9fX19fL3xfXyAgJCRfXy8gICAgICAgLyQkX18gICQkfF9fICAkJF9fLy8kJF9fICAkJCAvJCRfXyAgJCR8ICQkICAvJCQvCnwgJCQgIFwgJCR8ICQkICAgICAgfCAkJCAgIHwgJCR8ICQkICBcICQkfCAkJCAgXCAkJHwgJCQgIFxfXy98ICQkICB8ICQkICB8ICQkICB8ICQkICAgICAgICAgfCAkJCAgICAgICAgIHwgJCQgIFxfXy8gICB8ICQkICB8ICQkICBcICQkfCAkJCAgXF9fL3wgJCQgLyQkLyAKfCAkJCAgfCAkJHwgJCQkJCQgICB8ICAkJCAvICQkL3wgJCQgIHwgJCR8ICQkJCQkJCQvfCAgJCQkJCQkIHwgJCQkJCQkJCQgIHwgJCQgIHwgJCQkJCQgICAgICB8ICQkICAgICAgICAgfCAgJCQkJCQkICAgIHwgJCQgIHwgJCQkJCQkJCR8ICQkICAgICAgfCAkJCQkJC8gIAp8ICQkICB8ICQkfCAkJF9fLyAgICBcICAkJCAkJC8gfCAkJCAgfCAkJHwgJCRfX19fLyAgXF9fX18gICQkfCAkJF9fICAkJCAgfCAkJCAgfCAkJF9fLyAgICAgIHwgJCQgICAgICAgICAgXF9fX18gICQkICAgfCAkJCAgfCAkJF9fICAkJHwgJCQgICAgICB8ICQkICAkJCAgCnwgJCQgIHwgJCR8ICQkICAgICAgICBcICAkJCQvICB8ICQkICB8ICQkfCAkJCAgICAgICAvJCQgIFwgJCR8ICQkICB8ICQkICB8ICQkICB8ICQkICAgICAgICAgfCAkJCAgICAgICAgICAvJCQgIFwgJCQgICB8ICQkICB8ICQkICB8ICQkfCAkJCAgICAkJHwgJCRcICAkJCAKfCAkJCQkJCQkL3wgJCQkJCQkJCQgICBcICAkLyAgIHwgICQkJCQkJC98ICQkICAgICAgfCAgJCQkJCQkL3wgJCQgIHwgJCQgLyQkJCQkJHwgJCQgICAgICAgICB8ICQkICAgICAgICAgfCAgJCQkJCQkLyAgIHwgJCQgIHwgJCQgIHwgJCR8ICAkJCQkJCQvfCAkJCBcICAkJAp8X19fX19fXy8gfF9fX19fX19fLyAgICBcXy8gICAgIFxfX19fX18vIHxfXy8gICAgICAgXF9fX19fXy8gfF9fLyAgfF9fL3xfX19fX18vfF9fLyAgICAgICAgIHxfXy8gICAgICAgICAgXF9fX19fXy8gICAgfF9fLyAgfF9fLyAgfF9fLyBcX19fX19fLyB8X18vICBcX18vCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg"
+echo -e "\n\n"                                                                                                                                                          
+
+}
+
 function init_process {
+    welcome
     validate_command $CLI 
     case_script $@
 }
