@@ -21,6 +21,7 @@ function welcome {
 echo -e "\n\n"
 base64 -d <<<"IC8kJCQkJCQkICAvJCQkJCQkJCQgLyQkICAgIC8kJCAgLyQkJCQkJCAgLyQkJCQkJCQgICAvJCQkJCQkICAvJCQgICAvJCQgLyQkJCQkJCAvJCQkJCQkJCQgLyQkJCQkJCQkICAgICAgICAvJCQkJCQkICAvJCQkJCQkJCQgLyQkJCQkJCAgIC8kJCQkJCQgIC8kJCAgIC8kJAp8ICQkX18gICQkfCAkJF9fX19fL3wgJCQgICB8ICQkIC8kJF9fICAkJHwgJCRfXyAgJCQgLyQkX18gICQkfCAkJCAgfCAkJHxfICAkJF8vfCAkJF9fX19fL3xfXyAgJCRfXy8gICAgICAgLyQkX18gICQkfF9fICAkJF9fLy8kJF9fICAkJCAvJCRfXyAgJCR8ICQkICAvJCQvCnwgJCQgIFwgJCR8ICQkICAgICAgfCAkJCAgIHwgJCR8ICQkICBcICQkfCAkJCAgXCAkJHwgJCQgIFxfXy98ICQkICB8ICQkICB8ICQkICB8ICQkICAgICAgICAgfCAkJCAgICAgICAgIHwgJCQgIFxfXy8gICB8ICQkICB8ICQkICBcICQkfCAkJCAgXF9fL3wgJCQgLyQkLyAKfCAkJCAgfCAkJHwgJCQkJCQgICB8ICAkJCAvICQkL3wgJCQgIHwgJCR8ICQkJCQkJCQvfCAgJCQkJCQkIHwgJCQkJCQkJCQgIHwgJCQgIHwgJCQkJCQgICAgICB8ICQkICAgICAgICAgfCAgJCQkJCQkICAgIHwgJCQgIHwgJCQkJCQkJCR8ICQkICAgICAgfCAkJCQkJC8gIAp8ICQkICB8ICQkfCAkJF9fLyAgICBcICAkJCAkJC8gfCAkJCAgfCAkJHwgJCRfX19fLyAgXF9fX18gICQkfCAkJF9fICAkJCAgfCAkJCAgfCAkJF9fLyAgICAgIHwgJCQgICAgICAgICAgXF9fX18gICQkICAgfCAkJCAgfCAkJF9fICAkJHwgJCQgICAgICB8ICQkICAkJCAgCnwgJCQgIHwgJCR8ICQkICAgICAgICBcICAkJCQvICB8ICQkICB8ICQkfCAkJCAgICAgICAvJCQgIFwgJCR8ICQkICB8ICQkICB8ICQkICB8ICQkICAgICAgICAgfCAkJCAgICAgICAgICAvJCQgIFwgJCQgICB8ICQkICB8ICQkICB8ICQkfCAkJCAgICAkJHwgJCRcICAkJCAKfCAkJCQkJCQkL3wgJCQkJCQkJCQgICBcICAkLyAgIHwgICQkJCQkJC98ICQkICAgICAgfCAgJCQkJCQkL3wgJCQgIHwgJCQgLyQkJCQkJHwgJCQgICAgICAgICB8ICQkICAgICAgICAgfCAgJCQkJCQkLyAgIHwgJCQgIHwgJCQgIHwgJCR8ICAkJCQkJCQvfCAkJCBcICAkJAp8X19fX19fXy8gfF9fX19fX19fLyAgICBcXy8gICAgIFxfX19fX18vIHxfXy8gICAgICAgXF9fX19fXy8gfF9fLyAgfF9fL3xfX19fX18vfF9fLyAgICAgICAgIHxfXy8gICAgICAgICAgXF9fX19fXy8gICAgfF9fLyAgfF9fLyAgfF9fLyBcX19fX19fLyB8X18vICBcX18vCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg"
 echo -e "\n\n"                                                                                                                                                          
+sleep 3
 
 }
 
@@ -67,8 +68,8 @@ function create_cluster {
                echo -e "\nListing K8S NODES Please wait...\n"
                sleep 40
                kubectl get nodes 2>&1 || { echo >&2 "Unable to run kubectl - Aborting."; exit 1; }
-               echo -e "\nInstalling ingress\n"
-               install_ingress
+               #echo -e "\nInstalling ingress\n"
+               #install_ingress
                #echo -e "\ninstall_prometheus\n"
                #install_prometheus
                echo -e "\nCLUSTER READY\n"
@@ -99,6 +100,7 @@ function install_ingress {
 }
 
 function install_rmq {
+    init_process_expose
     echo -e "Making sure kafka is installed"
     helm status kafka-cluster 2>&1 || { echo >&2 "Kafka Cluster not installed - Installing."; install_kafka; }
     echo -e "\nInstalling RMQ\n"
@@ -115,15 +117,23 @@ function install_rmq {
     Management username : management
     Management password : $MNGPASS
     "
+    echo -e "\nExposing RMQ for  cluster: $1 as \n"
+    
+    expose_port 32025 2>&1 || { echo >&2 "Failed to expose RMQ - check ports avilable on localhost - Aborting."; exit 1; }
+    echo -e "\nExposing RMQ BROKERS as \n 
+    localhost:32025 - RMQ ADMIN"
+
+
+
     create_qexchange
 }
 
 function create_qexchange {
     echo -e "Creating new QUEUE And Exchance binding"
     echo -e "If creation fails - make sure rmq pods are up and then run - ./install-cluster.sh create_qexchange ./"
-    ./rabbitmqadmin -u guest -p guest --host localhost --port 8080 --path-prefix /rmq  -V / declare exchange name=test.exchange type=direct 2>&1 || { echo >&2 "failed to create RMQ exchange."; exit 1; }
-    ./rabbitmqadmin -u guest -p guest --host localhost --port 8080 --path-prefix /rmq  -V / declare queue name=test.queue 2>&1 || { echo >&2 "failed to create RMQ queue."; exit 1; }
-    ./rabbitmqadmin -u guest -p guest --host localhost --port 8080 --path-prefix /rmq  -V / declare binding source=test.exchange destination=test.queue 2>&1 || { echo >&2 "failed to create RMQ binding."; exit 1; }
+    ./rabbitmqadmin -u guest -p guest --host localhost --port 32025 -V / declare exchange name=test.exchange type=direct 2>&1 || { echo >&2 "failed to create RMQ exchange."; exit 1; }
+    ./rabbitmqadmin -u guest -p guest --host localhost --port 32025  -V / declare queue name=test.queue 2>&1 || { echo >&2 "failed to create RMQ queue."; exit 1; }
+    ./rabbitmqadmin -u guest -p guest --host localhost --port 32025   -V / declare binding source=test.exchange destination=test.queue 2>&1 || { echo >&2 "failed to create RMQ binding."; exit 1; }
 
     echo -e "Creating kafka connector"
     create_connector
@@ -159,6 +169,8 @@ curl -X PUT \
 }
 
 function install_es {
+    init_process_expose
+
     echo -e "\nInstalling ELASTICSEARCH \n"
     echo -e "\nInstalling CRD's \n"
     kubectl create -f ./helm/eck/customresources/all-in-one.yaml 
@@ -175,12 +187,16 @@ function install_es {
     Username: elastic
     Password: $GUESTPASS
     "
-    echo -e "To Access Kibana and ES please browse:
-    KIBANA: http://localhost:8080/kibana/
-    ELASTIC: http://localhost:8080/elastic/
+    echo -e "\nExposing Kibana for  cluster: $1 as \n"
+    
+    expose_port 31111 2>&1 || { echo >&2 "Failed to expose Kibana - check ports avilable on localhost - Aborting."; exit 1; }
+    echo -e "\n\nTo Access Kibana and ES please browse:
+    KIBANA: http://localhost:31111
+    Username: elastic
     Password: $GUESTPASS
     " 
-  
+
+
 
 }
 
@@ -190,23 +206,24 @@ function install_kafka {
     echo -e "\nInstalling KAFKA Operators\n"
     helm install kafka ./helm/kafka/01-operators/ 2>&1 || { echo >&2 "Failed to install Kafka Operators - Aborting"; exit 1; }
     echo -e "\nWaiting for KAFKA operator to be deployed (up to 4 minutes)\n"
-    kubectl wait --for=condition=Ready pods -l "name=strimzi-cluster-operator" --timeout 4m
+    kubectl wait --for=condition=Ready pods -l "name=strimzi-cluster-operator" --timeout 4m 2>&1 || { echo >&2 "Failed to install  strimzi-cluster-operator - please check pods and rerun kafka install"; exit 1; }
     echo -e "\nInstalling KAFKA Cluster\n"
     helm install kafka-cluster ./helm/kafka/02-clusters/ 2>&1 || { echo >&2 "Failed to install Kafka Cluster - Aborting"; exit 1; }
     echo -e "\nWaiting for KAFKA zookeeper to be deployed (up to 4 minutes)\n"
     sleep 15
-    kubectl wait --for=condition=Ready pods -l "strimzi.io/name=kafka-cluster-zookeeper" --timeout 4m
+    kubectl wait --for=condition=Ready pods -l "strimzi.io/name=kafka-cluster-zookeeper" --timeout 4m  2>&1 || { echo >&2 "Failed to install  kafka-cluster-zookeeper - please check pods and rerun kafka install"; exit 1; }
     echo -e "\nWaiting for KAFKA cluster to be deployed (up to 4 minutes)\n"
-    kubectl wait --for=condition=Ready pods -l "strimzi.io/name=kafka-cluster-kafka" --timeout 4m
-
+    kubectl wait --for=condition=Ready pods -l "strimzi.io/name=kafka-cluster-kafka" --timeout 4m 2>&1 || { echo >&2 "Failed to install  kafka-cluster-kafka - please check pods and rerun kafka install"; exit 1; } 
+        echo -e "\nWaiting for kafka-cluster-entity-operator to be deployed (up to 4 minutes)\n"
+    kubectl wait --for=condition=Ready pods -l "strimzi.io/name=kafka-cluster-entity-operator" --timeout 4m 2>&1 || { echo >&2 "Failed to install  kafka-cluster-entity-operator - please check pods and rerun kafka install"; exit 1; }
     echo -e "\nInstalling KAFKA Registry\n"
-    helm install kafka-registry --set kafka.bootstrapServers="PLAINTEXT://kafka-cluster-kafka-bootstrap:9092" ./helm/kafka/03-connectNregistry/kafka-registry  2>&1 || { echo >&2 "Failed to install Kafka registry - Aborting"; exit 1; }
+    helm install kafka-registry --set kafka.bootstrapServers="PLAINTEXT://kafka-cluster-kafka-bootstrap:9092" ./helm/kafka/03-connectNregistry/kafka-registry  2>&1 || { echo >&2 "Failed to install Kafka registry - please check pods and rerun kafka install"; exit 1; }
     echo -e "\nWaiting for KAFKA Registry to be deployed (up to 4 minutes)\n"
-    kubectl wait --for=condition=Ready pods -l "release=kafka-registry" --timeout 4m
+    kubectl wait --for=condition=Ready pods -l "release=kafka-registry" --timeout 4m 2>&1 || { echo >&2 "Failed to install kafka-registry - please check pods and rerun kafka install"; exit 1; }
     echo -e "\nInstalling KAFKA Connect\n"
-    helm install kafka-connect --set kafka.bootstrapServers="PLAINTEXT://kafka-cluster-kafka-bootstrap:9092",cp-schema-registry.url="kafkaregistry-cp-schema-registry:8081" ./helm/kafka/03-connectNregistry/kafka-connect 2>&1 || { echo >&2 "Failed to install Kafka connect - Aborting"; exit 1; }
+    helm install kafka-connect --set kafka.bootstrapServers="PLAINTEXT://kafka-cluster-kafka-bootstrap:9092",cp-schema-registry.url="kafkaregistry-cp-schema-registry:8081" ./helm/kafka/03-connectNregistry/kafka-connect 2>&1 || { echo >&2 "Failed to install Kafka connect - please check pods and rerun kafka install"; exit 1; }
     echo -e "\nWaiting for KAFKA Connect to be deployed (up to 4 minutes)\n"
-    kubectl wait --for=condition=Ready pods -l "release=kafka-connect" --timeout 4m
+    kubectl wait --for=condition=Ready pods -l "release=kafka-connect" --timeout 4m 2>&1 || { echo >&2 "Failed to install kafka-connect - please check pods and rerun kafka install"; exit 1; }
 
     echo -e "\nExposing KAKFA BROKERS for server $1 as \n"
     expose_port 32200 2>&1 || { echo >&2 "Failed to expose broker - check ports avilable on localhost"; exit 1; }
@@ -254,7 +271,6 @@ do
     docker run --rm -d --name proxy-$CLUSTER_NAME-${port} \
       --publish 127.0.0.1:${port}:${port} \
       --link $CLUSTER_NAME-worker:target \
-      --network kind \
       alpine/socat -dd \
       tcp-listen:${port},fork,reuseaddr tcp-connect:target:${node_port}
 done
@@ -301,7 +317,8 @@ case "$1" in
             install_prometheus
             ;;                     
         install-elastic)
-            echo installing elasticsearch on local cluster 
+            echo please make sure you write - install-elastic [k8s kind cluster name]
+            CLUSTER_NAME=$2
             install_es
             ;;         
         install-kafka)
@@ -312,15 +329,14 @@ case "$1" in
             install_kafka 
             ;;                     
         install-rmq)
-            echo installing rmq on local cluster 
+            echo please make sure you write - install-rmq [k8s kind cluster name]
+            CLUSTER_NAME=$2
             install_rmq
             ;;        
         create_qexchange)
             echo installing exchnage on local cluster 
             create_qexchange
-            ;;        
-
-                         
+            ;;                 
         delete-cluster)
             echo deleting cluster named $2
             CLUSTER_NAME=$2

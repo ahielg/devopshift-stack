@@ -340,7 +340,7 @@ service:
   ###
   epmdNodePort: null
   amqpNodePort: 30005
-  managerNodePort: null
+  managerNodePort: 32025
 
 podManagementPolicy: OrderedReady
 

@@ -1,10 +1,10 @@
-{{- if .Values.ingress_ambassador.enabled }}
----
-apiVersion: getambassador.io/v2
-kind:  Mapping
-metadata:
-  name:  {{  .Values.ingress_ambassador.name }}
-spec:
-  prefix: {{  .Values.ingress_ambassador.prefix }}
-  service: {{ .Values.ingress_ambassador.service }}
-{{- end }}
+# {{- if .Values.ingress_ambassador.enabled }}
+# ---
+# apiVersion: getambassador.io/v2
+# kind:  Mapping
+# metadata:
+#   name:  {{  .Values.ingress_ambassador.name }}
+# spec:
+#   prefix: {{  .Values.ingress_ambassador.prefix }}
+#   service: {{ .Values.ingress_ambassador.service }}
+# {{- end }}

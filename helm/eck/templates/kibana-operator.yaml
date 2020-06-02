@@ -12,8 +12,8 @@ spec:
       containers:
         - name: kibana
           env:
-            - name: SERVER_BASEPATH
-              value: "/kibana"
+            #- name: SERVER_BASEPATH
+             # value: "/kibana"
 #          - name: elasticsearch.hosts
 #            value: "quickstart-es-http"
 
@@ -21,4 +21,14 @@ spec:
     tls:
       selfSignedCertificate:
         disabled: true
+    service:
+      spec:
+        type: NodePort
+        ports:
+          - name: https
+            nodePort: 31111
+            port: 5601
+            protocol: TCP
+            targetPort: 5601
+
     

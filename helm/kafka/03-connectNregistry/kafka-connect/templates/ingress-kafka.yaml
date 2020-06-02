@@ -1,8 +1,8 @@
 
-apiVersion: getambassador.io/v2
-kind:  Mapping
-metadata:
-  name:  kafka-connect-ui
-spec:
-  prefix: /
-  service: kafka-ui:8000
+# apiVersion: getambassador.io/v2
+# kind:  Mapping
+# metadata:
+#   name:  kafka-connect-ui
+# spec:
+#   prefix: /
+#   service: kafka-ui:8000
